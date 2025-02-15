@@ -24,9 +24,15 @@
       </div>
     </div>
 
-    <!-- Text Input -->
+    <!-- Text Input and Button -->
     <div style="margin-top: 20px; text-align: center">
-      <input type="text" id="inputText" placeholder="Enter text here" />
+      <input
+        type="text"
+        id="inputText"
+        placeholder="Enter text here"
+        onclick="releaseUnityFocus()"
+        onblur="restoreUnityFocus()"
+      />
       <button onclick="sendTextToUnity()">Submit</button>
     </div>
 
@@ -93,6 +99,20 @@
           })
       }
       document.body.appendChild(script)
+
+      // Release Unity focus to allow typing in input box
+      function releaseUnityFocus() {
+        var canvas = document.getElementById('unity-canvas')
+        canvas.style.pointerEvents = 'none' // Temporarily disable Unity capturing input events
+      }
+
+      // Restore Unity focus when clicking outside the input box
+      function restoreUnityFocus() {
+        var canvas = document.getElementById('unity-canvas')
+        setTimeout(() => {
+          canvas.style.pointerEvents = 'auto' // Re-enable Unity capturing events after a short delay
+        }, 200)
+      }
 
       function sendTextToUnity() {
         var inputText = document.getElementById('inputText').value
