@@ -23,7 +23,15 @@
         <div id="unity-build-title">WebGL_Test</div>
       </div>
     </div>
+
+    <!-- Text Input -->
+    <div style="margin-top: 20px; text-align: center">
+      <input type="text" id="inputText" placeholder="Enter text here" />
+      <button onclick="sendTextToUnity()">Submit</button>
+    </div>
+
     <script>
+      var unityInstance
       var container = document.querySelector('#unity-container')
       var canvas = document.querySelector('#unity-canvas')
       var loadingBar = document.querySelector('#unity-loading-bar')
@@ -52,30 +60,17 @@
         updateBannerVisibility()
       }
 
-      var buildUrl = 'WebGLBuild/Build' // 🔥 FIXED: Add "WebGLBuild/"
+      var buildUrl = 'WebGLBuild/Build'
       var loaderUrl = buildUrl + '/WebGLBuild.loader.js'
       var config = {
         dataUrl: buildUrl + '/WebGLBuild.data',
         frameworkUrl: buildUrl + '/WebGLBuild.framework.js',
         codeUrl: buildUrl + '/WebGLBuild.wasm',
-        streamingAssetsUrl: 'WebGLBuild/StreamingAssets', // 🔥 FIXED
+        streamingAssetsUrl: 'WebGLBuild/StreamingAssets',
         companyName: 'DefaultCompany',
         productName: 'WebGL_Test',
         productVersion: '0.1',
         showBanner: unityShowBanner,
-      }
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement('meta')
-        meta.name = 'viewport'
-        meta.content =
-          'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes'
-        document.getElementsByTagName('head')[0].appendChild(meta)
-        container.className = 'unity-mobile'
-        canvas.className = 'unity-mobile'
-      } else {
-        canvas.style.width = '960px'
-        canvas.style.height = '600px'
       }
 
       loadingBar.style.display = 'block'
@@ -86,18 +81,29 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + '%'
         })
-          .then((unityInstance) => {
+          .then((instance) => {
             loadingBar.style.display = 'none'
             fullscreenButton.onclick = () => {
-              unityInstance.SetFullscreen(1)
+              instance.SetFullscreen(1)
             }
+            unityInstance = instance // Store the Unity instance globally
           })
           .catch((message) => {
             alert(message)
           })
       }
-
       document.body.appendChild(script)
+
+      function sendTextToUnity() {
+        var inputText = document.getElementById('inputText').value
+        if (unityInstance) {
+          unityInstance.SendMessage(
+            'TextReceiver',
+            'ReceiveTextFromJS',
+            inputText
+          )
+        }
+      }
     </script>
   </body>
 </html>
