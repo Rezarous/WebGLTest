@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Unity WebGL Game</title>
+    <script src="Build/WebGLBuild.loader.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden">
+    <div id="unityContainer" style="width: 100vw; height: 100vh"></div>
+    <script>
+      var gameInstance = UnityLoader.instantiate(
+        'unityContainer',
+        'Build/WebGLBuild.json'
+      )
+    </script>
+  </body>
+</html>
